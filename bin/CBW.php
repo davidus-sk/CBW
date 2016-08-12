@@ -1,5 +1,11 @@
 <?php
+/**
+ * Simple interface to CBW relay boxes
+ * 
+ * (c) 2016 David Ponevac (david at davidus dot sk) www.davidus.sk
+ */
 
+// app base path
 $basePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
 
 // include classes
@@ -24,6 +30,30 @@ if (file_exists($configFile) && is_readable($configFile)) {
 $cbw = new CBW();
 $result = $cbw->getValues($sensorData);
 
-if ($result) {
-	var_dump($sensorData);
+// few sanity checks
+if ($result && !empty($sensorData)) {
+	foreach ($sensorData as $sensor => $data) {
+		echo "{$sensor}> ";
+
+		// do we have a value
+		if (isset($data['value'])) {
+			echo "Name: {$data['name']}, Value: {$data['value']} {$data['units']}\r\n";
+		
+			// did we cross the lower threshold?
+			if (isset($data['thresholdLow']) && ($data['thresholdLow'] !== false) && ($data['value'] <= $data['thresholdLow'])) {
+				echo "\tAlarm for low threshold of {$data['thresholdLow']} {$data['units']}";
+			}
+			
+			// did we cross the upper treshold?
+			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
+				echo "\tAlarm for high threshold of {$data['thresholdHold']} {$data['units']}";
+			}	
+		}
+		// no value returned from XML call
+		else {
+			echo "No value found!\r\n";
+		}
+	}// foreach
+} else {
+	die("No data was acquired from the sensors!\r\n");
 }

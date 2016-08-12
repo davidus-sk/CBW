@@ -56,7 +56,7 @@ class CBW
 				if ($xml && isset($xml->{$key})) {
 					// we got a value on the first try
 					if (filter_var($xml->{$key}, FILTER_SANITIZE_NUMBER_FLOAT)) {
-						$config[$key]['value'] = filter_var($xml->{$key}, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
+						$config[$key]['value'] = (double)filter_var($xml->{$key}, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
 					}
 					// some of these inputs tend to flip-flop, let's try this couple of times
 					else {	
@@ -64,14 +64,14 @@ class CBW
 							$xml = $this->getXml($fields['host']);
 
 							if ($xml && filter_var($xml->{$key}, FILTER_SANITIZE_NUMBER_FLOAT)) {
-								$config[$key]['value'] = filter_var($xml->{$key}, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
+								$config[$key]['value'] = (double)filter_var($xml->{$key}, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_THOUSAND | FILTER_FLAG_ALLOW_FRACTION);
 								break;
 							}//if
 
 							usleep(50000);
 						}//for
 					}//if
-					
+
 					$status = true;
 				}//if
 			}//foreach
