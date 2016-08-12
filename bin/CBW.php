@@ -61,7 +61,7 @@ if ($result && !empty($sensorData)) {
 			
 			// did we cross the upper treshold?
 			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
-				echo "\tAlarm for high threshold of {$data['thresholdHold']} {$data['units']}";
+				echo "\tAlarm for high threshold of {$data['thresholdHigh']} {$data['units']}";
 				
 				if (!empty($data['notify']) && is_array($data['notify'])) {
 					$email = new Email();
