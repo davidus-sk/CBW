@@ -7,6 +7,7 @@
 
 // app base path
 $basePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+$lockPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
 
 // include classes
 include $basePath . 'class' . DIRECTORY_SEPARATOR . 'CBW.php';
@@ -34,53 +35,74 @@ $result = $cbw->getValues($sensorData);
 // few sanity checks
 if ($result && !empty($sensorData)) {
 	foreach ($sensorData as $sensor => $data) {
-		echo "{$sensor}> ";
 
 		// do we have a value
 		if (isset($data['value'])) {
-			echo "Name: {$data['name']}, Value: {$data['value']} {$data['units']}\r\n";
+			echo "{$sensor}> Name: {$data['name']}, Value: {$data['value']} {$data['units']}\r\n";
 
 			// did we cross the lower threshold?
 			if (isset($data['thresholdLow']) && ($data['thresholdLow'] !== false) && ($data['value'] <= $data['thresholdLow'])) {
 				echo "\tAlarm for low threshold of {$data['thresholdLow']} {$data['units']}\r\n";
+				
+				if (!file_exists($lockPath . md5($sensor . '_low'))) {
+					if (!empty($data['notify']) && is_array($data['notify'])) {
+						$email = new Email();
 
-				if (!empty($data['notify']) && is_array($data['notify'])) {
-					$email = new Email();
+						if ($email->ready) {
+							$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is below your low threshold of {$data['thresholdLow']} {$data['units']}");
 
-					if ($email->ready) {
-						$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is below your low threshold of {$data['thresholdLow']} {$data['units']}");
+							foreach ($data['notify'] as $address) {
+								$email->addAddress($address);
+							}
 
-						foreach ($data['notify'] as $address) {
-							$email->addAddress($address);
+							if ($email->send()) {
+								echo "\t Notification email sent!\r\n";
+							}
 						}
-
-						if ($email->send()) {
-							echo "\t Notification email sent!\r\n";
-						}
-					}
+					}//if
 				}//if
+				
+				// create lock file
+				touch($lockPath . md5($sensor . '_low'));
+			} else {
+				// cleaup if
+				if (file_exists($lockPath . md5($sensor . '_low'))) {
+					unlink($lockPath . md5($sensor . '_low'));
+					clearstatcache();
+				}
 			}
 			
 			// did we cross the upper treshold?
 			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
 				echo "\tAlarm for high threshold of {$data['thresholdHigh']} {$data['units']}\r\n";
 				
-				if (!empty($data['notify']) && is_array($data['notify'])) {
-					$email = new Email();
+				if (!file_exists($lockPath . md5($sensor . '_high'))) {
+					if (!empty($data['notify']) && is_array($data['notify'])) {
+						$email = new Email();
 
-					if ($email->ready) {
-						$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is above your high threshold of {$data['thresholdHigh']} {$data['units']}");
+						if ($email->ready) {
+							$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is above your high threshold of {$data['thresholdHigh']} {$data['units']}");
 
-						foreach ($data['notify'] as $address) {
-							$email->addAddress($address);
+							foreach ($data['notify'] as $address) {
+								$email->addAddress($address);
+							}
+
+							if ($email->send()) {
+								echo "\tNotification email sent!\r\n";
+							}
 						}
-
-						if ($email->send()) {
-							echo "\t Notification email sent!\r\n";
-						}
-					}
+					}//if
 				}//if
-			}	
+
+				// create lock file
+				touch($lockPath . md5($sensor . '_high'));
+			} else {
+				// cleaup if
+				if (file_exists($lockPath . md5($sensor . 'high'))) {
+					unlink($lockPath . md5($sensor . '_high'));
+					clearstatcache();
+				}
+			}//if	
 		}
 		// no value returned from XML call
 		else {
