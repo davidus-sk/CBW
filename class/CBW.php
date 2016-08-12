@@ -28,7 +28,8 @@ class CBW
 	 */
 	private function getXml($host)
 	{
-		$xmlString = file_get_contents('http://' . $host . '/state.xml');
+		$context = stream_context_create(array('http' => array('header'=>'Connection: close\r\n')));
+		$xmlString = file_get_contents('http://' . $host . '/state.xml', FALSE, $context);
 
 		if (!empty($xmlString)) {
 			return simplexml_load_string($xmlString);
