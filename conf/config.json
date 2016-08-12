@@ -1,0 +1,13 @@
+{
+	"sensor1": {
+		"host":"192.168.42.21",
+		"type":"temperature",
+		"name":"Sensor 1",
+		"units":"F",
+		"thresholdLow":0,
+		"thresholdHigh":160,
+		"notify":[
+			"helpdesk@duostech.com"
+		]
+	}
+}
