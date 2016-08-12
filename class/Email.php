@@ -12,7 +12,7 @@ class Email
 	public function __construct()
 	{
 		// read in config
-		$configFile = $basePath . 'conf' . DIRECTORY_SEPARATOR . 'email.json';
+		$configFile = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'conf' . DIRECTORY_SEPARATOR . 'email.json';
 
 		if (file_exists($configFile) && is_readable($configFile)) {
 			$jsonConfig = file_get_contents($configFile);
