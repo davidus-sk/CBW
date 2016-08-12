@@ -1,6 +1,6 @@
 <?php
 
-$basePath = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+$basePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
 
 // include classes
 include $basePath . 'class' . DIRECTORY_SEPARATOR . 'CBW.php';
