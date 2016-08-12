@@ -18,7 +18,7 @@ class Email
 			$jsonConfig = file_get_contents($configFile);
 			$emailData = json_decode($jsonConfig, true);
 
-			if (empty($emailData)) {
+			if (!empty($emailData)) {
 				$this->Phpmailer = new PHPMailer();
 				$this->Phpmailer->IsSMTP();
 				$this->Phpmailer->Host = $emailData['host'];
