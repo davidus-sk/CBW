@@ -46,7 +46,7 @@ class CBW
 	{
 		$status = false;
 
-		if (!epmty($config)) {
+		if (!empty($config)) {
 			// loop over sensors specified in config file
 			foreach ($config as $key => $fields) {
 				
