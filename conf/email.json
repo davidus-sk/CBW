@@ -1,0 +1,8 @@
+{
+	"host":"pod51009.outlook.com",
+	"protocol":"tls",
+	"port":587,
+	"username":"notify@duostech.com",
+	"password":"Duos.2011",
+	"fromAddress":"notify@duostech.com"
+}

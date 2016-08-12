@@ -10,6 +10,7 @@ $basePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
 
 // include classes
 include $basePath . 'class' . DIRECTORY_SEPARATOR . 'CBW.php';
+include $basePath . 'class' . DIRECTORY_SEPARATOR . 'Email.php';
 
 // read in config file
 $configFile = $basePath . 'conf' . DIRECTORY_SEPARATOR . 'config.json';
@@ -38,15 +39,43 @@ if ($result && !empty($sensorData)) {
 		// do we have a value
 		if (isset($data['value'])) {
 			echo "Name: {$data['name']}, Value: {$data['value']} {$data['units']}\r\n";
-		
+
 			// did we cross the lower threshold?
 			if (isset($data['thresholdLow']) && ($data['thresholdLow'] !== false) && ($data['value'] <= $data['thresholdLow'])) {
 				echo "\tAlarm for low threshold of {$data['thresholdLow']} {$data['units']}";
+
+				if (!empty($data['notify']) && is_array($data['notify'])) {
+					$email = new Email();
+
+					if ($email->ready) {
+						$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is below your low threshold of {$data['thresholdLow']} {$data['units']}");
+
+						foreach ($data['notify'] as $address) {
+							$email->addAddress($address);
+						}
+
+						$email->send();
+					}
+				}//if
 			}
 			
 			// did we cross the upper treshold?
 			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
 				echo "\tAlarm for high threshold of {$data['thresholdHold']} {$data['units']}";
+				
+				if (!empty($data['notify']) && is_array($data['notify'])) {
+					$email = new Email();
+
+					if ($email->ready) {
+						$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is above your high threshold of {$data['thresholdHigh']} {$data['units']}");
+
+						foreach ($data['notify'] as $address) {
+							$email->addAddress($address);
+						}
+
+						$email->send();
+					}
+				}//if
 			}	
 		}
 		// no value returned from XML call

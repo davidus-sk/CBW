@@ -5,9 +5,9 @@
 		"name":"Sensor 1",
 		"units":"F",
 		"thresholdLow":0,
-		"thresholdHigh":160,
+		"thresholdHigh":50,
 		"notify":[
-			"helpdesk@duostech.com"
+			"dxp@duostech.com"
 		]
 	}
 }
