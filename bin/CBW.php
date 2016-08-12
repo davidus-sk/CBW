@@ -35,6 +35,8 @@ $result = $cbw->getValues($sensorData);
 // few sanity checks
 if ($result && !empty($sensorData)) {
 	foreach ($sensorData as $sensor => $data) {
+		$lockFileHigh = $lockPath . md5($sensor . '_high');
+		$lockFileLow = $lockPath . md5($sensor . '_low');
 
 		// do we have a value
 		if (isset($data['value'])) {
@@ -42,9 +44,9 @@ if ($result && !empty($sensorData)) {
 
 			// did we cross the lower threshold?
 			if (isset($data['thresholdLow']) && ($data['thresholdLow'] !== false) && ($data['value'] <= $data['thresholdLow'])) {
-				echo "\tAlarm for low threshold of {$data['thresholdLow']} {$data['units']}\r\n";
+				echo "{$sensor}> Alarm for low threshold of {$data['thresholdLow']} {$data['units']}\r\n";
 				
-				if (!file_exists($lockPath . md5($sensor . '_low'))) {
+				if (!file_exists($lockFileLow)) {
 					if (!empty($data['notify']) && is_array($data['notify'])) {
 						$email = new Email();
 
@@ -56,27 +58,27 @@ if ($result && !empty($sensorData)) {
 							}
 
 							if ($email->send()) {
-								echo "\t Notification email sent!\r\n";
+								echo "{$sensor}> Notification email sent!\r\n";
 							}
 						}
 					}//if
 				}//if
 				
 				// create lock file
-				touch($lockPath . md5($sensor . '_low'));
+				touch($lockFileLow);
 			} else {
-				// cleaup if
-				if (file_exists($lockPath . md5($sensor . '_low'))) {
-					unlink($lockPath . md5($sensor . '_low'));
+				// cleanup if necessary
+				if (file_exists($lockFileLow)) {
+					unlink($lockFileLow);
 					clearstatcache();
 				}
 			}
 			
 			// did we cross the upper treshold?
 			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
-				echo "\tAlarm for high threshold of {$data['thresholdHigh']} {$data['units']}\r\n";
+				echo "{$sensor}> Alarm for high threshold of {$data['thresholdHigh']} {$data['units']}\r\n";
 				
-				if (!file_exists($lockPath . md5($sensor . '_high'))) {
+				if (!file_exists($lockFileHigh)) {
 					if (!empty($data['notify']) && is_array($data['notify'])) {
 						$email = new Email();
 
@@ -88,18 +90,18 @@ if ($result && !empty($sensorData)) {
 							}
 
 							if ($email->send()) {
-								echo "\tNotification email sent!\r\n";
+								echo "{$sensor}> Notification email sent!\r\n";
 							}
 						}
 					}//if
 				}//if
 
 				// create lock file
-				touch($lockPath . md5($sensor . '_high'));
+				touch($lockFileHigh);
 			} else {
-				// cleaup if
-				if (file_exists($lockPath . md5($sensor . 'high'))) {
-					unlink($lockPath . md5($sensor . '_high'));
+				// cleanup if necessary
+				if (file_exists($lockFileHigh)) {
+					unlink($lockFileHigh);
 					clearstatcache();
 				}
 			}//if	
