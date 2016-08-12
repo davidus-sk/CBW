@@ -42,7 +42,7 @@ if ($result && !empty($sensorData)) {
 
 			// did we cross the lower threshold?
 			if (isset($data['thresholdLow']) && ($data['thresholdLow'] !== false) && ($data['value'] <= $data['thresholdLow'])) {
-				echo "\tAlarm for low threshold of {$data['thresholdLow']} {$data['units']}";
+				echo "\tAlarm for low threshold of {$data['thresholdLow']} {$data['units']}\r\n";
 
 				if (!empty($data['notify']) && is_array($data['notify'])) {
 					$email = new Email();
@@ -54,14 +54,16 @@ if ($result && !empty($sensorData)) {
 							$email->addAddress($address);
 						}
 
-						$email->send();
+						if ($email->send()) {
+							echo "\t Notification email sent!\r\n";
+						}
 					}
 				}//if
 			}
 			
 			// did we cross the upper treshold?
 			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
-				echo "\tAlarm for high threshold of {$data['thresholdHigh']} {$data['units']}";
+				echo "\tAlarm for high threshold of {$data['thresholdHigh']} {$data['units']}\r\n";
 				
 				if (!empty($data['notify']) && is_array($data['notify'])) {
 					$email = new Email();
@@ -73,7 +75,9 @@ if ($result && !empty($sensorData)) {
 							$email->addAddress($address);
 						}
 
-						$email->send();
+						if ($email->send()) {
+							echo "\t Notification email sent!\r\n";
+						}
 					}
 				}//if
 			}	
