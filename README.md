@@ -1,12 +1,12 @@
 # ControlByWeb PHP App
 
-This simple PHP based application will let you monitor and graph sensor inputs on the CBW device and send out email alerts when preset thresholds are crossed. Checkout this project, edit the `config.json` and `email.json` files in the `config` directory and schedule `bin\CBW.php` to run as after as you like.
+This simple PHP based application will let you monitor and graph sensor inputs on the CBW device and send out email alerts when preset thresholds are crossed. Checkout this project, edit the `config.json` and `email.json` files in the `conf/` directory and schedule `bin\CBW.php` to run as after as you like.
 
 ## Configuration
 
 Application behavior is controlled via two JSON configuration files. You can edit those at any point in time as they are continously read by the scripts. The `config.json` file contains an array of sensor objects coming from one or more CBW devices. Tthe `email.json` file cotains email server related settings.
 
-``json
+```json
 [
 	{
 		"sensor":"sensor1",
@@ -21,7 +21,7 @@ Application behavior is controlled via two JSON configuration files. You can edi
 		]
 	}
 ]
-``
+```
 
 `sensor` Name of the CBW's variable you ant to monitor. You can add one or more into the object.
 `host` IP or domain name of the CBW device. You can add variables from multie CBW devices.
@@ -32,7 +32,7 @@ Application behavior is controlled via two JSON configuration files. You can edi
 `thresholdHigh` An alert will be generated when current value rises above this value. To disable put in false.
 `notify` An array of email addresses that should be notified. To disable leave array blank.
 
-``json
+```json
 {
 	"host":"pod51009.outlook.com",
 	"protocol":"tls",
@@ -41,12 +41,12 @@ Application behavior is controlled via two JSON configuration files. You can edi
 	"password":"XXXX",
 	"fromAddress":"me@domain.com"
 }
-``
+```
 
 ## How to deploy
 
 The easiest way to get this application going is to schedule it via cron or Task scheduler. You can also wrap the execution of `CBW.php` inside a while(true) loop and run it more frequently than once a minute.
 
-``
+```
 * * * * * root php /path/to/bin/CBW.php
-``
+```
