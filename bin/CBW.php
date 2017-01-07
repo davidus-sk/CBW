@@ -34,31 +34,33 @@ $result = $cbw->getValues($sensorData);
 
 // few sanity checks
 if ($result && !empty($sensorData)) {
-	foreach ($sensorData as $sensor => $data) {
-		$lockFileHigh = $lockPath . md5($sensor . '_high');
-		$lockFileLow = $lockPath . md5($sensor . '_low');
+	foreach ($sensorData as $sensor) {
+		$sensorName = $sensor['host'] . '_' . $sensor['sensor'];
+
+		$lockFileHigh = $lockPath . md5($sensorName . '_high');
+		$lockFileLow = $lockPath . md5($sensorName . '_low');
 
 		// do we have a value
-		if (isset($data['value'])) {
-			echo "{$sensor}> Name: {$data['name']}, Value: {$data['value']} {$data['units']}\r\n";
+		if (isset($sensor['value'])) {
+			echo "{$sensorName}> Name: {$sensor['name']}, Value: {$sensor['value']} {$sensor['units']}\r\n";
 
 			// did we cross the lower threshold?
-			if (isset($data['thresholdLow']) && ($data['thresholdLow'] !== false) && ($data['value'] <= $data['thresholdLow'])) {
-				echo "{$sensor}> Alarm for low threshold of {$data['thresholdLow']} {$data['units']}\r\n";
+			if (isset($sensor['thresholdLow']) && ($sensor['thresholdLow'] !== false) && ($sensor['value'] <= $sensor['thresholdLow'])) {
+				echo "{$sensorName}> Alarm for low threshold of {$sensor['thresholdLow']} {$sensor['units']}\r\n";
 				
 				if (!file_exists($lockFileLow)) {
-					if (!empty($data['notify']) && is_array($data['notify'])) {
+					if (!empty($sensor['notify']) && is_array($sensor['notify'])) {
 						$email = new Email();
 
 						if ($email->ready) {
-							$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is below your low threshold of {$data['thresholdLow']} {$data['units']}");
+							$email->message("Notification for {$sensor['name']}", "Current value of {$sensor['value']} {$sensor['units']} is below your low threshold of {$sensor['thresholdLow']} {$sensor['units']}");
 
-							foreach ($data['notify'] as $address) {
+							foreach ($sensor['notify'] as $address) {
 								$email->addAddress($address);
 							}
 
 							if ($email->send()) {
-								echo "{$sensor}> Notification email sent!\r\n";
+								echo "{$sensorName}> Notification email sent!\r\n";
 							}
 						}
 					}//if
@@ -75,22 +77,22 @@ if ($result && !empty($sensorData)) {
 			}
 			
 			// did we cross the upper treshold?
-			if (isset($data['thresholdHigh']) && ($data['thresholdHigh'] !== false) && ($data['value'] >= $data['thresholdHigh'])) {
-				echo "{$sensor}> Alarm for high threshold of {$data['thresholdHigh']} {$data['units']}\r\n";
+			if (isset($sensor['thresholdHigh']) && ($sensor['thresholdHigh'] !== false) && ($sensor['value'] >= $sensor['thresholdHigh'])) {
+				echo "{$sensorName}> Alarm for high threshold of {$sensor['thresholdHigh']} {$sensor['units']}\r\n";
 				
 				if (!file_exists($lockFileHigh)) {
-					if (!empty($data['notify']) && is_array($data['notify'])) {
+					if (!empty($sensor['notify']) && is_array($sensor['notify'])) {
 						$email = new Email();
 
 						if ($email->ready) {
-							$email->message("Notification for {$data['name']}", "Current value of {$data['value']} {$data['units']} is above your high threshold of {$data['thresholdHigh']} {$data['units']}");
+							$email->message("Notification for {$sensor['name']}", "Current value of {$sensor['value']} {$sensor['units']} is above your high threshold of {$sensor['thresholdHigh']} {$sensor['units']}");
 
-							foreach ($data['notify'] as $address) {
+							foreach ($sensor['notify'] as $address) {
 								$email->addAddress($address);
 							}
 
 							if ($email->send()) {
-								echo "{$sensor}> Notification email sent!\r\n";
+								echo "{$sensorName}> Notification email sent!\r\n";
 							}
 						}
 					}//if

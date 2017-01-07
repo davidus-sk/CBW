@@ -35,13 +35,22 @@ class Email
 		}
 	}
 	
+	/**
+	 * Add recipient
+	 * @param string $address
+	 */
 	public function addAddress($address)
 	{
 		if ($this->ready) {
 			$this->Phpmailer->AddAddress($address);
 		}
 	}
-	
+
+	/**
+	 * Compose message
+	 * @param string $subject
+	 * @param string $message
+	 */
 	public function message($subject, $message)
 	{
 		if ($this->ready) {

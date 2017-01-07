@@ -1,10 +1,10 @@
 # ControlByWeb PHP App
 
-This simple PHP based application will let you monitor and graph sensor inputs on the CBW device and send out email alerts when preset thresholds are crossed. Checkout this project, edit the `config.json` and `email.json` files in the `conf/` directory and schedule `bin\CBW.php` to run as after as you like.
+This simple PHP-based application will let you monitor and graph sensors attached to a CBW device and send out email alerts when preset thresholds are crossed. Checkout this project, edit the `config.json` and `email.json` files in the `conf/` directory and schedule `bin/CBW.php` to run periodically.
 
 ## Configuration
 
-Application behavior is controlled via two JSON configuration files. You can edit those at any point in time as they are continously read by the scripts. The `config.json` file contains an array of sensor objects coming from one or more CBW devices. Tthe `email.json` file cotains email server related settings.
+Application behavior is controlled via two JSON configuration files. You can edit those at any point in time as they are continously read by the app. The `config.json` file contains an array of sensor objects coming from one or more CBW devices. The `email.json` file contains email server related settings. In the `conf1 directory you will find sample files for both.
 
 ```json
 [
@@ -23,14 +23,14 @@ Application behavior is controlled via two JSON configuration files. You can edi
 ]
 ```
 
-`sensor` Name of the CBW's variable you ant to monitor. You can add one or more into the object.
-`host` IP or domain name of the CBW device. You can add variables from multie CBW devices.
-`type` This is not used right now, but it should name the physical attribute being monitored [temperature, humidity, voltage, etc.].
-`name` Name the sensor. This is free text, you can put in whatever you want.
-`units` Self explanatory - F, C, %RH, ...
-`thresholdLow` An alert will be generated when current value dips below this value. To disable put in false.
-`thresholdHigh` An alert will be generated when current value rises above this value. To disable put in false.
-`notify` An array of email addresses that should be notified. To disable leave array blank.
+* `sensor` Name of the CBW's variable you ant to monitor. You can add one or more into the object.
+* `host` IP or domain name of the CBW device. You can add variables from multie CBW devices.
+* `type` This is not used right now, but it should name the physical attribute being monitored [temperature, humidity, voltage, etc.].
+* `name` Name the sensor. This is free text, you can put in whatever you want.
+* `units` Self explanatory - F, C, %RH, ...
+* `thresholdLow` An alert will be generated when current value dips below this value. To disable put in `false`.
+* `thresholdHigh` An alert will be generated when current value rises above this value. To disable put in `false`.
+* `notify` An array of email addresses that should be notified. To disable leave the array blank `[]`.
 
 ```json
 {

@@ -49,10 +49,13 @@ class CBW
 
 		if (!empty($config)) {
 			// loop over sensors specified in config file
-			foreach ($config as $key => $fields) {
+			foreach ($config as $fields) {
 				
 				// get XML data from remote host
 				$xml = $this->getXml($fields['host']);
+				
+				// key is the sensor name
+				$key = $fields['sensor'];
 				
 				if ($xml && isset($xml->{$key})) {
 					// we got a value on the first try

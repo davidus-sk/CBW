@@ -1,5 +1,6 @@
-{
-	"sensor1": {
+[
+	{
+		"sensor":"sensor1",
 		"host":"192.168.42.21",
 		"type":"temperature",
 		"name":"Sensor 1",
@@ -7,7 +8,7 @@
 		"thresholdLow":0,
 		"thresholdHigh":50,
 		"notify":[
-			"dxp@duostech.com"
+			"me@email.com"
 		]
 	}
-}
+]
